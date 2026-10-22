@@ -6,7 +6,8 @@ const globalPourPool = globalThis as unknown as { pool?: Pool };
 export const pool =
   globalPourPool.pool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL,
+    // STORAGE_DATABASE_URL : nom créé par l'intégration Neon de Vercel avec le préfixe « STORAGE »
+    connectionString: process.env.DATABASE_URL || process.env.STORAGE_DATABASE_URL,
     max: 5,
   });
 

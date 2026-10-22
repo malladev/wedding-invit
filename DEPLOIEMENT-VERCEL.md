@@ -55,6 +55,8 @@ Comptez environ 20 minutes.
 3. Connectez la base au projet, pour les environnements **Production** et **Preview**.
 4. Allez dans **Settings → Environment Variables** et vérifiez que `DATABASE_URL` y figure.
    Vercel l'a ajoutée automatiquement, avec d'autres variables `POSTGRES_*` qui ne servent pas à ce projet.
+   Si vous avez donné le préfixe `STORAGE` à la connexion, la variable s'appelle **`STORAGE_DATABASE_URL`**.
+   Le site la reconnaît aussi : rien à renommer.
 
 ### Option B : directement sur Neon
 
@@ -76,7 +78,7 @@ Dans **Settings → Environment Variables**, ajoutez les variables suivantes pou
 
 | Nom | Valeur | Remarque |
 |---|---|---|
-| `DATABASE_URL` | URL de l'étape 3 | Déjà présente avec l'option A |
+| `DATABASE_URL` | URL de l'étape 3 | Déjà présente avec l'option A (ou sous le nom `STORAGE_DATABASE_URL`) |
 | `QR_SECRET_KEY` | une **nouvelle** clé (voir ci-dessous) | **Ne plus jamais la changer** une fois les cartes envoyées |
 | `SCAN_PIN` | un code de 8 chiffres ou plus | À donner uniquement aux agents d'accueil |
 | `INVITE_KEY` | une clé aléatoire (voir ci-dessous) | Sans elle, n'importe qui peut créer une carte |
