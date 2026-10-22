@@ -10,10 +10,21 @@ et reçoit aussitôt sa carte d'invitation en PNG. La carte porte un QR code chi
 | `/` | Formulaire (nom + téléphone), avec animations d'entrée |
 | `/invitation/[id]` | Carte de l'invité : téléchargement PNG, envoi WhatsApp, copie du lien. Des confettis s'affichent juste après la génération. |
 | `/scan` | Scanner des agents d'accueil, protégé par un code PIN |
+| `/invites` | Liste des invités avec qui est présent ou attendu, protégée par le même code PIN |
 | `/api/apercu?nom=...` | Aperçu de la carte avec un invité fictif (développement uniquement) |
 
-Un **bouton flottant** (en bas à droite, sur toutes les pages sauf `/scan`) ouvre le scanner.
+Un **bouton flottant** (en bas à droite, sur les pages publiques) ouvre le scanner.
 Il demande le code `SCAN_PIN` une seule fois. L'appareil reste ensuite autorisé **24 h**, sans redemander le code.
+
+Une fois le code saisi, une **barre d'onglets Scanner / Invités** permet de passer d'une page à l'autre.
+La page glisse dans le sens de la navigation, grâce aux View Transitions de React 19.3.
+La liste des invités affiche :
+- le taux de présence ;
+- des filtres Tous / Présents / Absents ;
+- une recherche par nom (sans tenir compte des accents) ou par fin de numéro ;
+- l'heure d'arrivée de chaque invité présent.
+
+Elle s'actualise toute seule toutes les 20 secondes. Les numéros y sont masqués.
 
 ### Sécurité
 

@@ -150,6 +150,7 @@ Sur l'adresse Vercel (`https://….vercel.app`) :
 - [ ] **Sur un téléphone**, le bouton flottant en bas à droite demande le code PIN, puis ouvre la caméra.
 - [ ] Le scan de la carte de test affiche **« Accès autorisé »**. Un deuxième scan affiche **« Carte déjà utilisée »**.
 - [ ] Un nouveau clic sur le bouton flottant ouvre le scanner **sans redemander le code** (mémorisé 24 h).
+- [ ] L'onglet **Invités** affiche la carte de test comme « Arrivé·e », avec l'heure du scan.
 
 Supprimez ensuite la carte de test dans l'éditeur SQL de Neon. Le numéro est enregistré sans espaces :
 

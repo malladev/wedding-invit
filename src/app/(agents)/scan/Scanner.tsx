@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type QrScanner from "qr-scanner";
 import { titreMariage } from "@/lib/config";
 
@@ -9,8 +10,9 @@ type Resultat =
   | { statut: "deja_utilise"; nom: string; telephone: string; utiliseLe: string }
   | { statut: "invalide"; message: string };
 
-export default function PageScan() {
-  const [connecte, setConnecte] = useState<boolean | null>(null);
+export function Scanner({ connecteInitial }: { connecteInitial: boolean }) {
+  const router = useRouter();
+  const [connecte, setConnecte] = useState(connecteInitial);
   const [pin, setPin] = useState("");
   const [erreur, setErreur] = useState<string | null>(null);
   const [resultat, setResultat] = useState<Resultat | null>(null);
@@ -18,10 +20,6 @@ export default function PageScan() {
   const video = useRef<HTMLVideoElement>(null);
   const scanner = useRef<QrScanner | null>(null);
   const enCours = useRef(false);
-
-  useEffect(() => {
-    fetch("/api/scan/session").then((r) => setConnecte(r.ok)).catch(() => setConnecte(false));
-  }, []);
 
   const verifier = useCallback(async (jeton: string) => {
     if (enCours.current) return;
@@ -36,6 +34,7 @@ export default function PageScan() {
       });
       if (rep.status === 401) {
         setConnecte(false);
+        router.refresh(); // masque la barre de navigation des agents
         return;
       }
       const json: Resultat = await rep.json();
@@ -44,7 +43,7 @@ export default function PageScan() {
     } catch {
       setResultat({ statut: "invalide", message: "Problème de connexion. Réessayez." });
     }
-  }, []);
+  }, [router]);
 
   // Démarre la caméra une fois connecté
   useEffect(() => {
@@ -86,15 +85,15 @@ export default function PageScan() {
     if (rep.ok) {
       setPin("");
       setConnecte(true);
+      router.refresh(); // affiche la barre de navigation des agents
     } else setErreur("Code incorrect.");
   }
 
   async function deconnexion() {
     await fetch("/api/scan/session", { method: "DELETE" });
     setConnecte(false);
+    router.refresh();
   }
-
-  if (connecte === null) return <main className="scan" />;
 
   if (!connecte) {
     return (

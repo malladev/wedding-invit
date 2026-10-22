@@ -15,7 +15,8 @@ export function BoutonScan() {
   const [erreur, setErreur] = useState<string | null>(null);
   const [occupe, setOccupe] = useState(false);
 
-  if (pathname === "/scan") return null;
+  // Espace agents : la barre d'onglets Scanner / Invités prend le relais
+  if (pathname === "/scan" || pathname.startsWith("/invites")) return null;
 
   async function ouvrir() {
     if (occupe) return;
