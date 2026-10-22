@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function FormulaireInvitation({ cle }: { cle: string }) {
+export function FormulaireInvitation() {
   const router = useRouter();
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -21,7 +21,6 @@ export function FormulaireInvitation({ cle }: { cle: string }) {
         body: JSON.stringify({
           nom: donnees.get("nom"),
           telephone: donnees.get("telephone"),
-          cle,
         }),
       });
       const json = await rep.json();

@@ -34,8 +34,8 @@ Elle s'actualise toute seule toutes les 20 secondes. Les numéros y sont masqué
 - **Un numéro = une invitation.** Si la même personne refait le formulaire (carte perdue), elle retrouve **la même carte**.
 - **Session des agents** : après le bon code PIN, le serveur dépose un cookie signé (HMAC), `HttpOnly`, valable 24 h.
   Le code PIN lui-même n'est jamais stocké dans le navigateur.
-- **Lien d'invitation** : si `INVITE_KEY` est défini, seuls les visiteurs venant du lien `/?k=CLE` peuvent créer une carte.
-  Cette vérification est **désactivée en développement** (`pnpm dev`), pour pouvoir tester directement sur `http://localhost:3000`.
+- **Accès au formulaire** : ouvert à toute personne qui connaît l'adresse du site, sans clé dans le lien.
+  Pour limiter les abus, fixez `MAX_INVITATIONS` au nombre d'invités prévus.
 
 ## Installation locale
 
@@ -57,7 +57,6 @@ pnpm dev                        # http://localhost:3000
 | `DATABASE_URL` | oui | URL PostgreSQL. En local : `postgresql://postgres:MOTDEPASSE@localhost:5432/wedding` (sans `sslmode`). En ligne : ajouter `?sslmode=require`. |
 | `QR_SECRET_KEY` | oui | Clé de chiffrement des QR codes, 32 caractères minimum. Générer avec `openssl rand -base64 48`. |
 | `SCAN_PIN` | oui | Code des agents d'accueil. Le champ de saisie affiche un clavier numérique : préférez 8 chiffres ou plus. |
-| `INVITE_KEY` | non | Clé du lien d'invitation (`/?k=CLE`). Vide = tout le monde peut créer une carte. |
 | `MAX_INVITATIONS` | non | Nombre maximum d'invitations (`0` = illimité). |
 | `ALLOW_PREVIEW` | non | `1` pour activer `/api/apercu` en production. |
 

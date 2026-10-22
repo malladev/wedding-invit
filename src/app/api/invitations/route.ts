@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
-import { chiffrerJeton, egaliteSure, genererId } from "@/lib/crypto";
+import { chiffrerJeton, genererId } from "@/lib/crypto";
 import { normaliserNom, normaliserTelephone } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -10,18 +10,11 @@ function erreur(message: string, status: number) {
 }
 
 export async function POST(req: Request) {
-  let corps: { nom?: unknown; telephone?: unknown; cle?: unknown };
+  let corps: { nom?: unknown; telephone?: unknown };
   try {
     corps = await req.json();
   } catch {
     return erreur("Requête invalide.", 400);
-  }
-
-  // Clé d'accès optionnelle : seuls ceux qui ont le lien partagé par les mariés peuvent s'inscrire.
-  // Non exigée en développement, pour tester directement sur http://localhost:3000
-  const cleAttendue = process.env.NODE_ENV === "development" ? "" : process.env.INVITE_KEY;
-  if (cleAttendue && (typeof corps.cle !== "string" || !egaliteSure(corps.cle, cleAttendue))) {
-    return erreur("Ce lien d'invitation n'est pas valide. Utilisez le lien envoyé par les mariés.", 403);
   }
 
   const nom = normaliserNom(corps.nom);

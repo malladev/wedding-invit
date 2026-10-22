@@ -5,7 +5,7 @@ Comptez environ 20 minutes.
 
 À la fin, vous aurez :
 - une adresse en HTTPS, par exemple `https://awa-moussa.vercel.app`. Le HTTPS est obligatoire pour la caméra du scanner ;
-- le lien à envoyer aux invités : `https://awa-moussa.vercel.app/?k=VOTRE_INVITE_KEY`.
+- le lien à envoyer aux invités : l'adresse du site, tout simplement.
 
 ---
 
@@ -81,7 +81,6 @@ Dans **Settings → Environment Variables**, ajoutez les variables suivantes pou
 | `DATABASE_URL` | URL de l'étape 3 | Déjà présente avec l'option A (ou sous le nom `STORAGE_DATABASE_URL`) |
 | `QR_SECRET_KEY` | une **nouvelle** clé (voir ci-dessous) | **Ne plus jamais la changer** une fois les cartes envoyées |
 | `SCAN_PIN` | un code de 8 chiffres ou plus | À donner uniquement aux agents d'accueil |
-| `INVITE_KEY` | une clé aléatoire (voir ci-dessous) | Sans elle, n'importe qui peut créer une carte |
 | `MAX_INVITATIONS` | `0` ou le nombre d'invités prévus | `0` = illimité |
 | `ALLOW_PREVIEW` | `0` | Laissez `0` en production |
 | `ENABLE_EXPERIMENTAL_COREPACK` | `1` | Déjà ajoutée à l'étape 2 |
@@ -91,9 +90,6 @@ Générez les secrets dans un terminal :
 ```bash
 # QR_SECRET_KEY
 node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
-
-# INVITE_KEY (sans caractères spéciaux, car elle va dans le lien)
-node -e "console.log(require('crypto').randomBytes(16).toString('base64url'))"
 
 # SCAN_PIN (8 chiffres)
 node -e "console.log(require('crypto').randomInt(10000000, 100000000))"
@@ -147,8 +143,7 @@ CREATE TABLE IF NOT EXISTS invitations (
 Sur l'adresse Vercel (`https://….vercel.app`) :
 
 - [ ] La page d'accueil s'affiche avec ses animations.
-- [ ] Sans `?k=…`, la création de carte est refusée (« Ce lien d'invitation n'est pas valide »). C'est voulu.
-- [ ] Avec `/?k=VOTRE_INVITE_KEY`, la création d'une carte de test fonctionne : les confettis apparaissent et la carte PNG se télécharge.
+- [ ] La création d'une carte de test fonctionne : les confettis apparaissent et la carte PNG se télécharge.
 - [ ] **Sur un téléphone**, le bouton flottant en bas à droite demande le code PIN, puis ouvre la caméra.
 - [ ] Le scan de la carte de test affiche **« Accès autorisé »**. Un deuxième scan affiche **« Carte déjà utilisée »**.
 - [ ] Un nouveau clic sur le bouton flottant ouvre le scanner **sans redemander le code** (mémorisé 24 h).
@@ -167,7 +162,7 @@ DELETE FROM invitations WHERE telephone = '+22370000000';
 Envoyez aux invités, par WhatsApp, SMS ou e-mail :
 
 ```
-https://VOTRE-SITE.vercel.app/?k=VOTRE_INVITE_KEY
+https://VOTRE-SITE.vercel.app
 ```
 
 **Nom de domaine personnalisé** (facultatif) : dans **Settings → Domains**, ajoutez par exemple `awa-et-moussa.com` et suivez les instructions DNS.
@@ -180,8 +175,7 @@ Le certificat HTTPS est fourni automatiquement.
 - **Modifier le code** : chaque `git push` sur la branche `main` redéploie automatiquement le site.
 - **Modifier une variable** : changez-la dans *Settings → Environment Variables*, puis faites **Redeploy**.
 - **Ne modifiez jamais `QR_SECRET_KEY`** une fois les premières cartes envoyées.
-- Les autres valeurs (`SCAN_PIN`, `INVITE_KEY`, `MAX_INVITATIONS`) peuvent changer sans casser les cartes existantes.
-  Changer `INVITE_KEY` invalide seulement l'ancien lien d'inscription.
+- Les autres valeurs (`SCAN_PIN`, `MAX_INVITATIONS`) peuvent changer sans casser les cartes existantes.
 
 ---
 
@@ -193,7 +187,6 @@ Le certificat HTTPS est fourni automatiquement.
 | Erreur 500 à la création d'une carte | `QR_SECRET_KEY` absente ou trop courte (moins de 32 caractères) | Ajouter la clé, puis faire Redeploy |
 | Erreur 500 ou `ECONNREFUSED` / `getaddrinfo` dans les logs | `DATABASE_URL` absente ou incorrecte | Vérifier l'URL et le `?sslmode=require` |
 | `relation "invitations" does not exist` | La table n'a pas été créée | Refaire l'étape 5 |
-| « Ce lien d'invitation n'est pas valide » | Lien sans `?k=` ou avec une mauvaise clé | Utiliser le lien exact avec `INVITE_KEY` |
 | « Code incorrect » au scanner alors que le code est bon | `SCAN_PIN` modifié sans redéploiement | Faire Redeploy |
 | La caméra ne s'ouvre pas | Permission refusée ou site en HTTP | Autoriser la caméra dans le navigateur, et utiliser l'adresse en `https://` |
 | Le code PIN est redemandé avant 24 h | Cookies effacés, navigation privée ou autre navigateur | Normal : la mémorisation est propre à chaque navigateur |

@@ -2,9 +2,7 @@ import { mariage } from "@/lib/config";
 import { FormulaireInvitation } from "./FormulaireInvitation";
 import { Decor, entree } from "./Decor";
 
-export default async function Accueil({ searchParams }: { searchParams: Promise<{ k?: string }> }) {
-  const { k } = await searchParams;
-
+export default function Accueil() {
   return (
     <main className="page">
       <Decor />
@@ -42,7 +40,7 @@ export default async function Accueil({ searchParams }: { searchParams: Promise<
           Renseignez votre nom et votre numéro. Votre carte personnelle avec son QR code d'accès sera
           générée tout de suite.
         </p>
-        <FormulaireInvitation cle={k ?? ""} />
+        <FormulaireInvitation />
       </section>
 
       <p className="pied entree" style={entree(6)}>
